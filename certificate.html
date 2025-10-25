@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate - The Unaccredited University</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        @media print {
+            .navbar, footer, .no-print {
+                display: none !important;
+            }
+            .certificate-container {
+                margin: 0;
+                box-shadow: none;
+                border: 10px solid #2c3e50;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>🎓 The Unaccredited University</h1>
+                <p class="tagline">Excellence in Self-Directed Learning</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="curriculum.html">Curriculum</a></li>
+                <li><a href="progress.html">My Progress</a></li>
+                <li><a href="certificate.html" class="active">Certificate</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="course-content">
+        <div class="container">
+            <div id="notEligible" class="no-print" style="display: none;">
+                <div class="progress-overview" style="text-align: center; padding: 3rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">📚</div>
+                    <h2>Certificate Not Yet Available</h2>
+                    <p style="font-size: 1.2rem; margin: 1.5rem 0; color: #7f8c8d;">Complete all 21 courses to earn your certificate!</p>
+                    <div class="progress-stat" style="display: inline-block; margin: 2rem 0;">
+                        <span class="progress-stat-number" id="coursesCompleted">0</span>
+                        <span>out of 21 courses completed</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="certProgressBar">0%</div>
+                    </div>
+                    <a href="progress.html" class="btn btn-primary" style="margin-top: 2rem; display: inline-block;">View Your Progress</a>
+                </div>
+            </div>
+
+            <div id="certificateSection" style="display: none;">
+                <div class="no-print" style="text-align: center; margin-bottom: 2rem;">
+                    <h2>Congratulations! 🎉</h2>
+                    <p style="font-size: 1.2rem; color: #7f8c8d; margin: 1rem 0;">You've completed the entire curriculum!</p>
+                    <button onclick="window.print()" class="btn btn-success" style="margin-top: 1rem;">Print Certificate</button>
+                    <button onclick="downloadCertificate()" class="btn btn-primary" style="margin-top: 1rem; margin-left: 1rem;">Download as Image</button>
+                </div>
+
+                <div class="certificate-container" id="certificate">
+                    <div class="certificate-seal">🎓</div>
+                    <h1 class="certificate-title">Certificate of Completion</h1>
+                    
+                    <div style="margin: 2rem 0;">
+                        <p class="certificate-text">This is to certify that</p>
+                        <div class="certificate-name" id="certName">Your Name</div>
+                        <p class="certificate-text">has successfully completed the</p>
+                        <div class="certificate-degree">
+                            Bachelor of Online Poker Software Design
+                        </div>
+                        <p class="certificate-text">A comprehensive 3-year self-study program consisting of 21 courses and 273 weeks of dedicated learning in full-stack development, real-time systems, blockchain technology, and software engineering.</p>
+                    </div>
+
+                    <div style="margin: 2rem 0;">
+                        <p style="font-size: 1rem; color: #7f8c8d;">
+                            Completion Date: <span id="completionDate"></span>
+                        </p>
+                        <p style="font-size: 1rem; color: #7f8c8d; margin-top: 0.5rem;">
+                            Total Weeks Completed: 273
+                        </p>
+                    </div>
+
+                    <div class="certificate-signatures">
+                        <div class="signature">
+                            <div style="font-family: 'Brush Script MT', cursive; font-size: 2rem; margin-bottom: 0.5rem;">
+                                Your Achievement
+                            </div>
+                            <div class="signature-line"></div>
+                            <p style="font-weight: bold;">Self-Directed Excellence</p>
+                            <p style="font-size: 0.9rem; color: #7f8c8d;">Dean of Self-Study</p>
+                        </div>
+                        <div class="signature">
+                            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🏆</div>
+                            <div class="signature-line"></div>
+                            <p style="font-weight: bold;">The Unaccredited University</p>
+                            <p style="font-size: 0.9rem; color: #7f8c8d;">Est. 2025</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 3rem; padding-top: 2rem; border-top: 2px solid #ecf0f1;">
+                        <p style="font-size: 0.85rem; color: #95a5a6; font-style: italic; text-align: center;">
+                            *This certificate is completely unaccredited and holds no institutional value.<br>
+                            However, the knowledge and skills you've gained are very real!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 The Unaccredited University. Not affiliated with any real institution.</p>
+            <p class="footer-note">This is a self-study curriculum tool. All learning resources are free and publicly available.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+        function checkEligibility() {
+            const progress = window.UU.calculateOverallProgress();
+            const settings = window.UU.loadSettings();
+            
+            let completedCourses = 0;
+            window.UU.coursesData.forEach(course => {
+                const courseProgress = window.UU.calculateCourseProgress(course.id);
+                if (courseProgress.percentage === 100) {
+                    completedCourses++;
+                }
+            });
+
+            // Show completion stats
+            document.getElementById('coursesCompleted').textContent = completedCourses;
+            document.getElementById('certProgressBar').style.width = progress.percentage + '%';
+            document.getElementById('certProgressBar').textContent = progress.percentage + '%';
+
+            if (completedCourses === 21) {
+                // Eligible for certificate
+                document.getElementById('notEligible').style.display = 'none';
+                document.getElementById('certificateSection').style.display = 'block';
+                
+                // Fill in certificate details
+                const name = settings.studentName || 'Your Name';
+                document.getElementById('certName').textContent = name;
+                
+                const today = new Date();
+                document.getElementById('completionDate').textContent = today.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            } else {
+                // Not eligible yet
+                document.getElementById('notEligible').style.display = 'block';
+                document.getElementById('certificateSection').style.display = 'none';
+            }
+        }
+
+        function downloadCertificate() {
+            const certificate = document.getElementById('certificate');
+            
+            html2canvas(certificate, {
+                scale: 2,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                const link = document.createElement('a');
+                const settings = window.UU.loadSettings();
+                const name = settings.studentName || 'Student';
+                link.download = `${name.replace(/\s+/g, '_')}_UU_Certificate.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+
+        // Initialize page
+        checkEligibility();
+    </script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curriculum - The Unaccredited University</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>🎓 The Unaccredited University</h1>
+                <p class="tagline">Excellence in Self-Directed Learning</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="curriculum.html" class="active">Curriculum</a></li>
+                <li><a href="progress.html">My Progress</a></li>
+                <li><a href="certificate.html">Certificate</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="course-header">
+        <div class="container">
+            <h1>Bachelor of Online Poker Software Design</h1>
+            <p class="hero-subtitle">Complete 3-Year Curriculum</p>
+        </div>
+    </header>
+
+    <section class="course-content">
+        <div class="container">
+            <div class="progress-overview">
+                <h2>Set Your Start Date</h2>
+                <p>Choose when you want to begin your studies. All course deadlines will be calculated from this date.</p>
+                <div style="margin-top: 2rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                    <label for="studentName" style="font-weight: 600;">Your Name:</label>
+                    <input type="text" id="studentName" placeholder="Enter your name" style="padding: 0.5rem; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 1rem;">
+                    
+                    <label for="startDate" style="font-weight: 600; margin-left: 2rem;">Start Date:</label>
+                    <input type="date" id="startDate" style="padding: 0.5rem; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 1rem;">
+                    
+                    <button onclick="saveStartDate()" class="btn btn-primary">Save Settings</button>
+                </div>
+                <p id="startDateStatus" style="margin-top: 1rem; color: #27ae60; font-weight: 600;"></p>
+            </div>
+
+            <!-- Year 1 -->
+            <div style="margin-top: 4rem;">
+                <h2 style="color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 0.5rem;">Year 1: Foundation</h2>
+                
+                <!-- Semester 1 -->
+                <h3 style="margin-top: 2rem; color: #3498db;">Semester 1</h3>
+                <div id="year1-sem1" class="course-list"></div>
+
+                <!-- Semester 2 -->
+                <h3 style="margin-top: 2rem; color: #3498db;">Semester 2</h3>
+                <div id="year1-sem2" class="course-list"></div>
+            </div>
+
+            <!-- Year 2 -->
+            <div style="margin-top: 4rem;">
+                <h2 style="color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 0.5rem;">Year 2: Advanced Development</h2>
+                
+                <!-- Semester 1 -->
+                <h3 style="margin-top: 2rem; color: #3498db;">Semester 1</h3>
+                <div id="year2-sem1" class="course-list"></div>
+
+                <!-- Semester 2 -->
+                <h3 style="margin-top: 2rem; color: #3498db;">Semester 2</h3>
+                <div id="year2-sem2" class="course-list"></div>
+            </div>
+
+            <!-- Year 3 -->
+            <div style="margin-top: 4rem;">
+                <h2 style="color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 0.5rem;">Year 3: Specialization & Integration</h2>
+                
+                <!-- Semester 1 -->
+                <h3 style="margin-top: 2rem; color: #3498db;">Semester 1</h3>
+                <div id="year3-sem1" class="course-list"></div>
+
+                <!-- Semester 2 -->
+                <h3 style="margin-top: 2rem; color: #3498db;">Semester 2</h3>
+                <div id="year3-sem2" class="course-list"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 The Unaccredited University. Not affiliated with any real institution.</p>
+            <p class="footer-note">This is a self-study curriculum tool. All learning resources are free and publicly available.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        function saveStartDate() {
+            const nameInput = document.getElementById('studentName');
+            const dateInput = document.getElementById('startDate');
+            const status = document.getElementById('startDateStatus');
+            
+            const name = nameInput.value.trim();
+            const date = dateInput.value;
+            
+            if (!name) {
+                status.textContent = 'Please enter your name.';
+                status.style.color = '#e74c3c';
+                return;
+            }
+            
+            if (!date) {
+                status.textContent = 'Please select a start date.';
+                status.style.color = '#e74c3c';
+                return;
+            }
+            
+            window.UU.saveSettings({ startDate: date, studentName: name });
+            status.textContent = `Settings saved! Welcome, ${name}. Your journey begins on ${new Date(date).toLocaleDateString()}.`;
+            status.style.color = '#27ae60';
+        }
+
+        function loadStartDate() {
+            const settings = window.UU.loadSettings();
+            if (settings.studentName) {
+                document.getElementById('studentName').value = settings.studentName;
+            }
+            if (settings.startDate) {
+                document.getElementById('startDate').value = settings.startDate;
+                document.getElementById('startDateStatus').textContent = `Current start date: ${new Date(settings.startDate).toLocaleDateString()}`;
+                document.getElementById('startDateStatus').style.color = '#3498db';
+            }
+        }
+
+        function renderCourses() {
+            const courses = window.UU.coursesData;
+            
+            courses.forEach((course, index) => {
+                const containerId = `year${course.year}-sem${course.semester}`;
+                const container = document.getElementById(containerId);
+                
+                if (!container) return;
+                
+                const progress = window.UU.calculateCourseProgress(course.id);
+                
+                const card = document.createElement('div');
+                card.className = 'course-card';
+                card.innerHTML = `
+                    <div class="course-card-header">
+                        <div>
+                            <h3 class="course-card-title">${course.name}</h3>
+                            <p class="course-card-code">${course.code} • ${course.weeks} weeks</p>
+                        </div>
+                    </div>
+                    <div class="course-card-progress">
+                        <div class="mini-progress-bar">
+                            <div class="mini-progress-fill" style="width: ${progress.percentage}%"></div>
+                        </div>
+                        <span>${progress.completed}/${progress.total} weeks</span>
+                    </div>
+                    <p style="margin-top: 1rem; color: #7f8c8d;"><strong>Resources:</strong> ${course.resources}</p>
+                    <a href="course.html?id=${course.id}" class="btn btn-primary" style="margin-top: 1rem; display: inline-block;">View Course Details</a>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Initialize page
+        loadStartDate();
+        renderCourses();
+    </script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Progress - The Unaccredited University</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>🎓 The Unaccredited University</h1>
+                <p class="tagline">Excellence in Self-Directed Learning</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="curriculum.html">Curriculum</a></li>
+                <li><a href="progress.html" class="active">My Progress</a></li>
+                <li><a href="certificate.html">Certificate</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="course-header">
+        <div class="container">
+            <h1>Your Learning Journey</h1>
+            <p class="hero-subtitle">Track your progress toward your Bachelor of Online Poker Software Design</p>
+        </div>
+    </header>
+
+    <section class="course-content">
+        <div class="container">
+            <div class="progress-overview">
+                <h2>Overall Progress</h2>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="overallProgressBar">0%</div>
+                </div>
+                
+                <div class="progress-stats">
+                    <div class="progress-stat">
+                        <span class="progress-stat-number" id="completedWeeks">0</span>
+                        <span>Weeks Completed</span>
+                    </div>
+                    <div class="progress-stat">
+                        <span class="progress-stat-number" id="totalWeeks">273</span>
+                        <span>Total Weeks</span>
+                    </div>
+                    <div class="progress-stat">
+                        <span class="progress-stat-number" id="completedCourses">0</span>
+                        <span>Courses Completed</span>
+                    </div>
+                    <div class="progress-stat">
+                        <span class="progress-stat-number" id="currentYear">1</span>
+                        <span>Current Year</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Year 1 Progress -->
+            <div style="margin-top: 4rem;">
+                <h2 style="color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 0.5rem;">Year 1: Foundation</h2>
+                <div class="course-list" id="year1-courses"></div>
+            </div>
+
+            <!-- Year 2 Progress -->
+            <div style="margin-top: 4rem;">
+                <h2 style="color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 0.5rem;">Year 2: Advanced Development</h2>
+                <div class="course-list" id="year2-courses"></div>
+            </div>
+
+            <!-- Year 3 Progress -->
+            <div style="margin-top: 4rem;">
+                <h2 style="color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 0.5rem;">Year 3: Specialization & Integration</h2>
+                <div class="course-list" id="year3-courses"></div>
+            </div>
+
+            <div style="margin-top: 3rem; text-align: center;">
+                <button onclick="resetProgress()" class="btn" style="background-color: #e74c3c; color: white;">Reset All Progress</button>
+                <p style="margin-top: 1rem; color: #7f8c8d; font-size: 0.9rem;">Warning: This will delete all your progress data</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 The Unaccredited University. Not affiliated with any real institution.</p>
+            <p class="footer-note">This is a self-study curriculum tool. All learning resources are free and publicly available.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+                localStorage.removeItem('uuProgress');
+                location.reload();
+            }
+        }
+
+        function determineCurrentYear() {
+            const progress = window.UU.loadProgress();
+            let completedCourses = 0;
+            
+            window.UU.coursesData.forEach(course => {
+                const courseProgress = window.UU.calculateCourseProgress(course.id);
+                if (courseProgress.percentage === 100) {
+                    completedCourses++;
+                }
+            });
+            
+            if (completedCourses >= 14) return 3;
+            if (completedCourses >= 7) return 2;
+            return 1;
+        }
+
+        function renderProgress() {
+            // Calculate overall progress
+            const overall = window.UU.calculateOverallProgress();
+            
+            // Update overall stats
+            document.getElementById('overallProgressBar').style.width = overall.percentage + '%';
+            document.getElementById('overallProgressBar').textContent = overall.percentage + '%';
+            document.getElementById('completedWeeks').textContent = overall.completedWeeks;
+            document.getElementById('totalWeeks').textContent = overall.totalWeeks;
+            
+            // Count completed courses
+            let completedCourses = 0;
+            window.UU.coursesData.forEach(course => {
+                const courseProgress = window.UU.calculateCourseProgress(course.id);
+                if (courseProgress.percentage === 100) {
+                    completedCourses++;
+                }
+            });
+            document.getElementById('completedCourses').textContent = completedCourses;
+            document.getElementById('currentYear').textContent = determineCurrentYear();
+            
+            // Render courses by year
+            for (let year = 1; year <= 3; year++) {
+                const container = document.getElementById(`year${year}-courses`);
+                container.innerHTML = '';
+                
+                const yearCourses = window.UU.coursesData.filter(c => c.year === year);
+                
+                yearCourses.forEach(course => {
+                    const progress = window.UU.calculateCourseProgress(course.id);
+                    
+                    const card = document.createElement('div');
+                    card.className = 'course-card';
+                    card.style.borderLeftColor = progress.percentage === 100 ? '#27ae60' : '#3498db';
+                    
+                    const statusBadge = progress.percentage === 100 ? 
+                        '<span style="background-color: #27ae60; color: white; padding: 0.3rem 0.8rem; border-radius: 12px; font-size: 0.85rem; font-weight: bold;">✓ Completed</span>' :
+                        progress.percentage > 0 ?
+                        '<span style="background-color: #f39c12; color: white; padding: 0.3rem 0.8rem; border-radius: 12px; font-size: 0.85rem; font-weight: bold;">In Progress</span>' :
+                        '<span style="background-color: #95a5a6; color: white; padding: 0.3rem 0.8rem; border-radius: 12px; font-size: 0.85rem; font-weight: bold;">Not Started</span>';
+                    
+                    card.innerHTML = `
+                        <div class="course-card-header">
+                            <div>
+                                <h3 class="course-card-title">${course.name}</h3>
+                                <p class="course-card-code">${course.code} • Semester ${course.semester}</p>
+                            </div>
+                            ${statusBadge}
+                        </div>
+                        <div class="course-card-progress">
+                            <div class="mini-progress-bar">
+                                <div class="mini-progress-fill" style="width: ${progress.percentage}%; background-color: ${progress.percentage === 100 ? '#27ae60' : '#3498db'}"></div>
+                            </div>
+                            <span><strong>${progress.completed}/${progress.total}</strong> weeks (${progress.percentage}%)</span>
+                        </div>
+                        <a href="course.html?id=${course.id}" class="btn btn-primary" style="margin-top: 1rem; display: inline-block;">Continue Course</a>
+                    `;
+                    
+                    container.appendChild(card);
+                });
+            }
+        }
+
+        // Initialize page
+        renderProgress();
+    </script>
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to The Unaccredited University!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .container {
+            background: white;
+            max-width: 800px;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .emoji {
+            text-align: center;
+            font-size: 4rem;
+            margin: 1rem 0;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+        .welcome-text {
+            color: #34495e;
+            font-size: 1.1rem;
+            margin: 1.5rem 0;
+        }
+        .steps {
+            background: #ecf0f1;
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+        .step {
+            margin: 1rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+        .step::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+        .cta-button {
+            display: block;
+            width: 100%;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin: 2rem 0 1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .feature {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .feature-title {
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .disclaimer {
+            background: #fff3cd;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="emoji">🎓</div>
+        <h1>Welcome to The Unaccredited University!</h1>
+        <p class="subtitle">Bachelor of Online Poker Software Design</p>
+        
+        <p class="welcome-text">
+            <strong>Congratulations!</strong> You're about to embark on a comprehensive 3-year learning journey to master full-stack development, blockchain technology, and game development - everything you need to build a Bitcoin-powered online poker room!
+        </p>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">📚</div>
+                <div class="feature-title">21 Courses</div>
+                <p>Comprehensive curriculum</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📅</div>
+                <div class="feature-title">273 Weeks</div>
+                <p>Structured learning path</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">✅</div>
+                <div class="feature-title">Progress Tracking</div>
+                <p>Mark your achievements</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🏆</div>
+                <div class="feature-title">Certificate</div>
+                <p>Earn your degree!</p>
+            </div>
+        </div>
+
+        <div class="steps">
+            <h2 style="color: #2c3e50; margin-bottom: 1rem;">Quick Start Guide:</h2>
+            <div class="step"><strong>Click the button below</strong> to open your university homepage</div>
+            <div class="step"><strong>Navigate to "Curriculum"</strong> in the top menu</div>
+            <div class="step"><strong>Enter your name</strong> and set your start date</div>
+            <div class="step"><strong>Click on your first course</strong> (CS101 recommended)</div>
+            <div class="step"><strong>Start learning!</strong> Check off weeks as you complete them</div>
+        </div>
+
+        <a href="index.html" class="cta-button">🚀 Launch Your University Experience</a>
+
+        <div class="disclaimer">
+            <strong>⚠️ Important:</strong> This certificate is completely unaccredited and holds no institutional value. However, the knowledge and skills you'll gain are VERY real! All course materials link to legitimate free resources from Harvard, MIT, freeCodeCamp, and other reputable sources.
+        </div>
+
+        <p style="text-align: center; margin-top: 2rem; color: #7f8c8d;">
+            <small>Your progress is saved in your browser. Works offline after first load!</small>
+        </p>
+    </div>
+</body>
+</html>

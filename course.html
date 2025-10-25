@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Details - The Unaccredited University</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>🎓 The Unaccredited University</h1>
+                <p class="tagline">Excellence in Self-Directed Learning</p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="curriculum.html">Curriculum</a></li>
+                <li><a href="progress.html">My Progress</a></li>
+                <li><a href="certificate.html">Certificate</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="course-header">
+        <div class="container">
+            <p class="course-code" id="courseCode"></p>
+            <h1 class="course-title" id="courseTitle"></h1>
+            <div class="course-meta">
+                <div class="meta-item">
+                    <span>📅</span>
+                    <span id="courseDuration"></span>
+                </div>
+                <div class="meta-item">
+                    <span>📚</span>
+                    <span id="courseYear"></span>
+                </div>
+                <div class="meta-item">
+                    <span>📊</span>
+                    <span id="courseProgress"></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="course-content">
+        <div class="container">
+            <div class="progress-overview">
+                <h2>Course Progress</h2>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar">0%</div>
+                </div>
+            </div>
+
+            <h2 style="margin-top: 3rem;">Course Objectives</h2>
+            <ul class="objectives-list" id="objectivesList"></ul>
+
+            <h2 style="margin-top: 3rem;">Learning Resources</h2>
+            <p id="courseResources" style="font-size: 1.1rem; color: #34495e;"></p>
+
+            <div class="weekly-schedule">
+                <h2>Weekly Schedule</h2>
+                <p style="color: #7f8c8d; margin-bottom: 2rem;">Check off weeks as you complete them. Deadlines are calculated from your start date.</p>
+                <div id="weeklyTopics"></div>
+            </div>
+
+            <div style="margin-top: 3rem; text-align: center;">
+                <a href="curriculum.html" class="btn btn-primary">Back to Curriculum</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 The Unaccredited University. Not affiliated with any real institution.</p>
+            <p class="footer-note">This is a self-study curriculum tool. All learning resources are free and publicly available.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        function toggleWeek(courseId, weekIndex) {
+            const progress = window.UU.loadProgress();
+            if (!progress.completedWeeks[courseId]) {
+                progress.completedWeeks[courseId] = Array(13).fill(false);
+            }
+            progress.completedWeeks[courseId][weekIndex] = !progress.completedWeeks[courseId][weekIndex];
+            window.UU.saveProgress(progress);
+            renderCourse();
+        }
+
+        function renderCourse() {
+            const courseId = getQueryParam('id');
+            const course = window.UU.coursesData.find(c => c.id === courseId);
+            
+            if (!course) {
+                document.getElementById('courseTitle').textContent = 'Course not found';
+                return;
+            }
+
+            // Set course header
+            document.getElementById('courseCode').textContent = course.code;
+            document.getElementById('courseTitle').textContent = course.name;
+            document.getElementById('courseDuration').textContent = `${course.weeks} weeks`;
+            document.getElementById('courseYear').textContent = `Year ${course.year}, Semester ${course.semester}`;
+            
+            // Calculate and display progress
+            const courseProgress = window.UU.calculateCourseProgress(courseId);
+            document.getElementById('courseProgress').textContent = `${courseProgress.percentage}% complete`;
+            
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = courseProgress.percentage + '%';
+            progressBar.textContent = courseProgress.percentage + '%';
+
+            // Render objectives
+            const objectivesList = document.getElementById('objectivesList');
+            objectivesList.innerHTML = '';
+            course.objectives.forEach(objective => {
+                const li = document.createElement('li');
+                li.textContent = objective;
+                objectivesList.appendChild(li);
+            });
+
+            // Render resources
+            document.getElementById('courseResources').textContent = course.resources;
+
+            // Render weekly topics
+            const settings = window.UU.loadSettings();
+            const progress = window.UU.loadProgress();
+            const completedWeeks = progress.completedWeeks[courseId] || Array(course.weeks).fill(false);
+            const weeklyTopics = document.getElementById('weeklyTopics');
+            weeklyTopics.innerHTML = '';
+
+            const courseIndex = window.UU.getCourseIndex(courseId);
+
+            course.weeklyTopics.forEach((topic, index) => {
+                const deadline = settings.startDate ? 
+                    window.UU.getWeekDeadline(settings.startDate, courseIndex, index + 1) : null;
+                
+                const weekItem = document.createElement('div');
+                weekItem.className = 'week-item';
+                weekItem.style.borderLeftColor = completedWeeks[index] ? '#27ae60' : '#3498db';
+                weekItem.style.backgroundColor = completedWeeks[index] ? '#d5f4e6' : '#ecf0f1';
+                
+                weekItem.innerHTML = `
+                    <div class="week-info">
+                        <h4>Week ${index + 1}</h4>
+                        <p>${topic}</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 2rem;">
+                        <div class="week-deadline">
+                            <strong>Deadline:</strong><br>
+                            ${deadline ? window.UU.formatDate(deadline) : 'Set start date'}
+                        </div>
+                        <div class="week-checkbox">
+                            <input 
+                                type="checkbox" 
+                                id="week-${index}" 
+                                ${completedWeeks[index] ? 'checked' : ''}
+                                onchange="toggleWeek('${courseId}', ${index})"
+                            >
+                            <label for="week-${index}" style="cursor: pointer; user-select: none;">
+                                ${completedWeeks[index] ? 'Completed ✓' : 'Mark Complete'}
+                            </label>
+                        </div>
+                    </div>
+                `;
+                
+                weeklyTopics.appendChild(weekItem);
+            });
+        }
+
+        // Initialize page
+        renderCourse();
+    </script>
+</body>
+</html>
